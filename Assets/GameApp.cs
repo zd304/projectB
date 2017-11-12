@@ -5,20 +5,29 @@ public class GameApp : MonoBehaviour
 {
 	void Awake()
 	{
-		float fov = (float)Screen.width / (float)Screen.height;
-		float fHeight = mainCamera.orthographicSize;
-		float fWidth = mainCamera.orthographicSize * fov;
+		mCanvas = Resources.Load<GameObject>("Prefab/Canvas");
+		mBrickInst = Resources.Load<GameObject>("Prefab/brick");
 
-		int col = 10;
-		int raw = 10;
-		float brickSize = 256.0f;
+		mCanvas = GameObject.Instantiate(mCanvas);
 
-		float gap = (float)Screen.width * 0.02f;
-		float w = ((float)Screen.width - (gap * (col + 1))) / col;
-		float scale = w / brickSize;
+		Canvas canvas = mCanvas.GetComponent<Canvas>();
+		canvas.worldCamera = mainCamera;
 
-		mBrickInst = Resources.Load<GameObject>("Prefab/brick_front");
+		int col = 5;
+		int raw = 5;
+		MainCanvas mc = mCanvas.GetComponent<MainCanvas>();
+		mc.SetLayout(raw, col, 8, 8);
 
+		GameObject brick = null;
+		for (int i = 0; i < raw; ++i)
+		{
+			for (int j = 0; j < col; ++j)
+			{
+				brick = GameObject.Instantiate(mBrickInst);
+				RectTransform rc = brick.GetComponent<RectTransform>();
+				mc.AddBrick(rc, i, j);
+			}
+		}
 	}
 
 	void Start()
@@ -33,4 +42,5 @@ public class GameApp : MonoBehaviour
 
 	public Camera mainCamera;
 	GameObject mBrickInst = null;
+	GameObject mCanvas = null;
 }
